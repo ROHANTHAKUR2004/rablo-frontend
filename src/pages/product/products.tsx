@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
-
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-
 import { useAppDispatch, useAppSelector } from "@/state-manager/hook";
 import {
   deleteProduct,
@@ -30,116 +28,62 @@ export default function ProductsPage() {
   useEffect(() => {
     dispatch(fetchProducts()).unwrap()
       .then(() => {
-        toast({
-          title: "Fetched products successfully",
-        });
+        toast({ title: "Fetched products successfully" });
       })
       .catch((error) => {
-        toast({
-          title: error,
-          variant: "destructive",
-        });
+        toast({ title: error, variant: "destructive" });
       });
   }, []);
+
   const handleFeatured = () => {
-    const newFeaturedState = !isFeatured;  // Toggle the current state
-    setIsFeatured(newFeaturedState);       // Update the state
-  
+    const newFeaturedState = !isFeatured;
+    setIsFeatured(newFeaturedState);
+
     if (newFeaturedState) {
-      // If the new state is true, fetch only featured products
       dispatch(OnlyFeatured()).unwrap()
-        .then(() => {
-          toast({
-            title: "Fetched only featured products",
-          });
-        })
-        .catch((error) => {
-          toast({
-            title: error,
-            variant: "destructive",
-          });
-        });
+        .then(() => toast({ title: "Fetched only featured products" }))
+        .catch((error) => toast({ title: error, variant: "destructive" }));
     } else {
-      // Otherwise, fetch all products
       dispatch(fetchProducts()).unwrap()
-        .then(() => {
-          toast({
-            title: "Fetched all products successfully",
-          });
-        })
-        .catch((error) => {
-          toast({
-            title: error,
-            variant: "destructive",
-          });
-        });
+        .then(() => toast({ title: "Fetched all products successfully" }))
+        .catch((error) => toast({ title: error, variant: "destructive" }));
     }
   };
-  
+
   useEffect(() => {
     dispatch(PriceLessThanValue(maxPrice)).unwrap()
-      .then(() => {
-        toast({
-          title: "fetched products with under maxprice",
-        });
-      })
-      .catch((error) => {
-        toast({
-          title: error,
-          variant: "destructive",
-        });
-      });
+      .then(() => toast({ title: "Fetched products under max price" }))
+      .catch((error) => toast({ title: error, variant: "destructive" }));
   }, [maxPrice]);
+
   useEffect(() => {
     dispatch(RatingHigherThanValue(minRating)).unwrap()
-      .then(() => {
-        toast({
-          title: "fetched products with under maxprice",
-        });
-      })
-      .catch((error) => {
-        toast({
-          title: error,
-          variant: "destructive",
-        });
-      });
+      .then(() => toast({ title: "Fetched products with minimum rating" }))
+      .catch((error) => toast({ title: error, variant: "destructive" }));
   }, [minRating]);
+
   const handleDelete = (productId: string) => {
     dispatch(deleteProduct(productId)).unwrap()
       .then(() => {
-        toast({
-          title: "product deleted successfully",
-        });
+        toast({ title: "Product deleted successfully" });
         dispatch(fetchProducts()).unwrap()
-          .then(() => {
-            toast({
-              title: "Fetched products successfully",
-            });
-          })
-          .catch((error) => {
-            toast({
-              title: error,
-              variant: "destructive",
-            });
-          });
+          .then(() => toast({ title: "Fetched products successfully" }))
+          .catch((error) => toast({ title: error, variant: "destructive" }));
       })
-      .catch((err) => {
-        toast({
-          title: err,
-          variant: "destructive",
-        });
-      });
+      .catch((err) => toast({ title: err, variant: "destructive" }));
   };
+
   if (isLoading) {
     return <Loader />;
   }
-  console.log("this is a products :", products);
-  return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Products</h1>
 
-      <div className="mb-8 space-y-4">
-        <div>
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">Products</h1>
+
+      {/* Filter Controls */}
+      <div className="flex flex-col md:flex-row gap-4 md:gap-8 mb-8 justify-center">
+        <div className="w-full md:w-1/3">
           <Label htmlFor="price-filter">Max Price: ${maxPrice}</Label>
           <Slider
             id="price-filter"
@@ -151,7 +95,7 @@ export default function ProductsPage() {
           />
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
           <Switch
             id="featured-filter"
             checked={isFeatured}
@@ -160,7 +104,7 @@ export default function ProductsPage() {
           <Label htmlFor="featured-filter">Featured Only</Label>
         </div>
 
-        <div>
+        <div className="w-full md:w-1/3">
           <Label htmlFor="rating-filter">Min Rating: {minRating}</Label>
           <Slider
             id="rating-filter"
@@ -173,37 +117,38 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.length > 0 &&
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {products.length > 0 ? (
           products.map((product) => (
-            <div key={product._id} className="border rounded-lg p-4 shadow-sm">
-              {/* <img
-                src={product.productImage}
-                alt={product.name}
-                width={300}
-                height={300}
-                className="w-full h-48 object-cover mb-4 rounded"
-              /> */}
-              <h2 className="text-lg font-semibold">{product.name}</h2>
-              <p className="text-gray-600">${product.price.toFixed(2)}</p>
-              <p className="text-gray-600">{product.productId}</p>
+            <div
+              key={product._id}
+              className="border rounded-lg p-5 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 bg-white"
+            >
+              <h2 className="text-lg font-semibold text-gray-800">{product.name}</h2>
+              <p className="text-gray-700 text-lg font-medium">${product.price.toFixed(2)}</p>
+              <p className="text-sm text-gray-500">Product ID: {product.productId}</p>
               <p className="text-sm text-gray-500">Rating: {product.rating}</p>
               {product.featured && (
-                <span className="inline-block bg-yellow-200 text-yellow-800 text-xs px-2 py-1 rounded-full mt-2">
+                <span className="mt-2 inline-block bg-yellow-300 text-yellow-900 text-xs px-3 py-1 rounded-full">
                   Featured
                 </span>
               )}
-              { isLoggedIn &&
+
+              {isLoggedIn && (
                 <div className="mt-4 flex justify-between items-center">
-                <UpdateProductDialog product={product} />
-                <Trash
-                  onClick={() => handleDelete(product._id)}
-                  className="h-5 w-5 text-red-500 cursor-pointer"
-                />
-              </div>
-              }
+                  <UpdateProductDialog product={product} />
+                  <Trash
+                    onClick={() => handleDelete(product._id)}
+                    className="h-5 w-5 text-red-500 cursor-pointer"
+                  />
+                </div>
+              )}
             </div>
-          ))}
+          ))
+        ) : (
+          <p className="text-center text-gray-600 col-span-full">No products found.</p>
+        )}
       </div>
     </div>
   );

@@ -13,19 +13,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
 import { useAppDispatch, useAppSelector } from "@/state-manager/hook";
 import { Register } from "@/state-manager/slices/authSlice";
 import { useToast } from "@/hooks/use-toast";
 import Loader from "@/helper/Loader";
 import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, User, Mail, Lock } from 'lucide-react';
 
 const registrationSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -65,24 +58,39 @@ export default function StylishRegistrationForm() {
           title: error,
         });
       });
-    form.reset(); // Reset form after submission
+    form.reset();
   };
+
   if (isLoading) {
     return <Loader />;
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <Card className="w-full max-w-md bg-white shadow-lg">
-        <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">
-            Create an account
-          </CardTitle>
-          <CardDescription>
-            Enter your details below to create your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-primary to-secondary">
+      <div className="md:w-1/2 flex items-center justify-center p-8">
+        <div className="max-w-md w-full space-y-8 text-white">
+          <h2 className="mt-6 text-5xl font-extrabold">Welcome</h2>
+          <p className="text-xl">
+            Join our community and start your journey with us today.
+          </p>
+        </div>
+      </div>
+      <div className="md:w-1/2 bg-background flex items-center justify-center p-8">
+        <div className="max-w-md w-full space-y-8">
+          <div>
+            <h2 className="mt-6 text-3xl font-extrabold text-foreground">
+              Create your account
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="font-medium text-primary hover:text-primary/80 transition-colors"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -92,10 +100,14 @@ export default function StylishRegistrationForm() {
                   <FormItem>
                     <FormLabel className="text-foreground/80">Name</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        className="border-gray-300 transition-all duration-300 focus:ring-2 focus:ring-black"
-                      />
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
+                        <Input
+                          {...field}
+                          className="pl-10 bg-muted/50 border-muted-foreground/20 focus:border-primary transition-all duration-300"
+                          placeholder="Enter your name"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -109,11 +121,15 @@ export default function StylishRegistrationForm() {
                   <FormItem>
                     <FormLabel className="text-foreground/80">Email</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="email"
-                        className="border-gray-300 transition-all duration-300 focus:ring-2 focus:ring-black"
-                      />
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
+                        <Input
+                          {...field}
+                          type="email"
+                          className="pl-10 bg-muted/50 border-muted-foreground/20 focus:border-primary transition-all duration-300"
+                          placeholder="Enter your email"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -129,11 +145,15 @@ export default function StylishRegistrationForm() {
                       Password
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="password"
-                        className="border-gray-300 transition-all duration-300 focus:ring-2 focus:ring-black"
-                      />
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
+                        <Input
+                          {...field}
+                          type="password"
+                          className="pl-10 bg-muted/50 border-muted-foreground/20 focus:border-primary transition-all duration-300"
+                          placeholder="Create a password"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -142,25 +162,15 @@ export default function StylishRegistrationForm() {
 
               <Button
                 type="submit"
-                className="w-full bg-black text-white hover:bg-gray-900 transition-all duration-300"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-300 flex items-center justify-center"
               >
-                Register
+                Create Account
+                <ArrowRight className="ml-2" size={18} />
               </Button>
             </form>
           </Form>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="text-black font-semibold hover:underline"
-            >
-              Login
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
